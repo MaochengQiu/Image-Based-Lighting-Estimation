@@ -1,0 +1,987 @@
+﻿<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+    <meta http-equiv="Content-Type" content="application/msword; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西安电子科技大学_基于视觉自回归模型的图像光照估计方法研究_2026年04月17日21时18分41秒</title>
+    <!--[if gte mso 9]>
+    <xml>
+    <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+    <w:DisplayBackgroundShape/>
+    </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style type="text/css">
+        body.c-word--body {
+            padding: 0;
+            margin: 0;
+            font-family: "Microsoft YaHei", SimHei, SimSun, "Times New Roman", Georgia, Serif;
+        }
+
+        .c-word--empty {
+            text-align: center;
+            font-size: 24px;
+            color: #ddd;
+            padding: 60px 20px;
+        }
+
+        .c-word--title {
+            padding: 9pt 1pt;
+            margin: 0;
+            text-align: center;
+        }
+
+        table.table {
+            width: 100%;
+            margin: 3pt auto;
+            border-collapse: collapse;
+            border-spacing: 1pt;
+        }
+
+        table.table-border {
+            border-collapse: collapse;
+        }
+
+            table.table-border tr th {
+                border: solid windowtext 1pt;
+                border-color: #000;
+                border-width: 1pt;
+            }
+
+            table.table-border tr td {
+                border: solid windowtext 1pt;
+                border-color: #000;
+                border-width: 1pt;
+            }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+    
+    <style type="text/css">
+        div.single-page{font-size:14pt}div.single-page .word-logo{margin-top:10pt;margin-bottom:10pt;text-align:center}div.single-page .word-title1{margin-top:10pt;margin-bottom:20pt;font-weight:500;text-align:center;font-size:26pt;font-family:黑体}table.word-userinfo{width:95%;text-align:left}table.word-userinfo tr td.c-cell-title{text-align:right;font-family:黑体,华文细黑;font-size:15pt;padding:1pt 6pt 1pt 0;vertical-align:middle;margin-top:6pt}table.word-userinfo td.c-cell-value{text-align:center;font-family:仿宋,黑体,华文细黑;font-size:15pt;border-bottom:solid windowtext 1pt;padding:1pt 6pt 1pt 0;vertical-align:middle;margin-top:6pt}div.c-base-info .c-base-info-title{text-align:left;font-family:黑体,华文细黑;font-size:14pt;line-height:30pt;vertical-align:middle;font-weight:500;page-break-after:avoid}div.c-base-info .c-base-info-content{margin:1pt auto 1pt}table.c-base-info-table{width:100%;border-collapse:collapse}table.c-base-info-table tr td{border:solid windowtext 1pt;padding:6pt 0}table.c-base-info-table tr td.c-cell-title{text-align:center;font-family:宋体,华文细黑,黑体;font-size:12pt}table.c-base-info-table tr td.c-cell-value{text-align:left;font-family:宋体,华文细黑,黑体;font-size:12pt;padding-left:12pt}table.c-base-info-table tr.c-liststudent-tr td.c-cell-value{padding:0;margin:0;text-align:center}table.c-lxyj-table{width:100%;border-collapse:collapse}table.c-lxyj-table tr td{border:solid windowtext 1pt;padding:0 0}.c-lxyj .c-lxyj-title{text-align:left;font-family:宋体,华文细黑,黑体;font-size:12pt;font-weight:600;line-height:20pt;vertical-align:middle;margin:6pt 0}.c-lxyj .c-lxyj-content{font-family:宋体,华文细黑,黑体;font-size:12pt;line-height:24pt;margin:12pt 4pt 24pt;text-indent:24pt}.c-lxyj .c-lxyj-content .c-lxyj-sub{margin:6pt 0 12pt}.c-lxyj .c-lxyj-content .c-lxyj-sub .c-lxyj-sub-title{font-family:仿宋,宋体,华文细黑,黑体;font-weight:600;font-size:12pt;text-indent:24pt}.c-lxyj .c-lxyj-content .c-lxyj-sub .c-lxyj-sub-contet{font-family:宋体,华文细黑,黑体;font-size:12pt;margin:2pt 24pt 12pt;text-indent:24pt}table.c-jfys-table{width:100%;border-collapse:collapse}table.c-jfys-table tr th{border:solid windowtext 1pt;padding:6pt 0}table.c-jfys-table tr td{border:solid windowtext 1pt;padding:6pt 2pt}table.c-yijian-table{width:100%;border-collapse:collapse}table.c-yijian-table tr td{border:solid windowtext 1pt;padding:6pt 2pt}table.c-yijian-table tr td .c-yijian-sign{padding:6pt 12pt 6pt 2pt;margin:12pt 40pt 2pt auto;font-weight:600;text-align:right;font-family:仿宋,宋体,华文细黑,黑体}table.c-yijian-table tr td .c-yijian-content{padding:6pt 12pt 6pt 2pt;margin:12pt}.table-headerfooter{line-height:0}.table-headerfooter td{padding:0;margin:0}.PageInfoContainerFooter{text-align:center;font-family:"宋体","仿宋","华文细黑","黑体";font-size:12pt}h1.word-title1{font-family:"黑体";text-align:center;font-size:22pt;line-height:30pt;margin:10pt 0}.split-line{font-size:5pt}.paragraph-1{font-size:12pt}.table_1{width:100%;text-align:center;border-collapse:collapse;margin:10pt auto;font-family:"仿宋_GB2312","仿宋","黑体";font-size:16pt}.table_1 tr td{border:0;padding:2pt 2pt;margin:0;text-align:left}.table_2{width:100%;text-align:center;border-collapse:collapse;margin:10pt auto;font-family:"仿宋_GB2312","仿宋","黑体";font-size:16pt}.table_2 tr td{border:0;padding:2pt 2pt;margin:0;text-align:left}.table_main_1{width:100%;text-align:center;border-collapse:collapse;margin:10pt auto;font-size:14pt}.table_main_1 tr td{border:solid windowtext 1pt;padding:6pt 2pt;margin:0;text-align:center}.GUC{font-family:"楷体",KaiTi,"仿宋_GB2312","仿宋","黑体";font-size:11pt;font-weight:400}.GUC .word-page1-header{font-family:"仿宋_GB2312","仿宋","楷体",KaiTi,"黑体";font-size:15pt;line-height:1.5}.GUC .word-page1-header div{margin-bottom:10pt}.GUC .word-page1-header div:last-child{margin-bottom:0}.GUC h1.word-title1--school-name{font-family:"华文行楷","楷体",KaiTi;font-size:36pt;text-align:center;margin:15pt 0;line-height:1.5}.GUC h1.word-title1{font-family:"华文中宋","楷体",KaiTi;font-size:24pt;line-height:1.5;margin:12pt 0}.GUC .word-userinfo-container table.word-userinfo tr td.c-cell-title{font-family:"仿宋_GB2312","仿宋","楷体",KaiTi,"黑体";font-weight:700;padding-right:10pt;font-size:16pt;line-height:1}.GUC .word-userinfo-container table.word-userinfo td.c-cell-value{font-family:"仿宋_GB2312","仿宋","楷体",KaiTi,"黑体";font-size:16pt;line-height:1}.GUC .word-page1-footer{font-family:"楷体_GB2312","楷体","仿宋_GB2312","仿宋",KaiTi,"黑体";font-size:16pt;line-height:1;margin:80pt 0 6pt;text-align:center;font-weight:700}.GUC .word-abstract .word-abstract-title{font-family:"黑体","仿宋_GB2312","仿宋","楷体",KaiTi;font-size:18pt;line-height:1;margin-top:12pt;margin-bottom:12pt;text-align:center}.GUC .word-abstract .word-abstract-content{font-family:"仿宋_GB2312","仿宋","楷体",KaiTi,"黑体";font-size:14pt;line-height:2;text-indent:2em}.GUC .word-abstract .word-abstract-content div{margin-bottom:6pt}.GUC .word-abstract .word-abstract-content div:last-child{margin-bottom:0}.GUC .table_2{font-family:"楷体",KaiTi;font-size:12pt}.GUC .table_main_1{font-family:"楷体",KaiTi;font-size:14pt;margin:0}.table_main_1 tr.table_main_1_tr__1 td{border-top:0}.GUC .paragraph-1{font-family:"楷体",KaiTi;font-size:12pt;line-height:1}.GUC .paragraph-2{font-family:"楷体",KaiTi;font-size:12pt;line-height:1.5}.YNU .single-page .word-title1{font-family:"华文中宋","楷体",KaiTi;font-size:24pt;line-height:1.5;margin:12pt 0}.YNU .word-title2{text-align:center;font-family:"仿宋","华文中宋","楷体",KaiTi;font-size:16pt;line-height:1.5}.YNU table.cns-qm{width:100%;margin-top:30pt}.YNU table.cns-qm tr td{font-family:"仿宋","华文中宋","楷体",KaiTi;font-size:16pt;line-height:1.5;padding:1pt 6pt 1pt 0;vertical-align:middle}.YNU .word-abstract-content p{font-family:"仿宋","华文中宋","楷体",KaiTi;font-size:16pt;line-height:2;text-indent:2em}.ZUCC .single-page .word-title1{font-family:"方正小标宋简体","黑体";font-weight:400;font-size:22pt;line-height:1.5;margin:12pt 0 0}.ZUCC .word-title2{text-align:center;font-family:"楷体",KaiTi,"仿宋","华文中宋";font-size:22pt;line-height:1.5;font-weight:400}.ZUCC table.word-userinfo tr td.c-cell-title{font-family:"仿宋_GB2312","仿宋","宋体","华文中宋","黑体","华文细黑";font-size:14pt;font-weight:400}.ZUCC table.word-userinfo td.c-cell-value{font-family:"仿宋_GB2312","仿宋","宋体","华文中宋","黑体","华文细黑";font-size:14pt;font-weight:400}.ZUCC table.c-base-info-table tr.text-center td{text-align:center}.ZUCC table.c-base-info-table tr td.c-cell-title{font-family:"宋体","仿宋_GB2312","仿宋","华文中宋","黑体","华文细黑";font-size:12pt;font-weight:700;padding:6pt 3pt}.ZUCC table.c-base-info-table tr td.c-cell-value{font-family:"宋体","仿宋_GB2312","仿宋","华文中宋","黑体","华文细黑";font-size:12pt;font-weight:400;padding:6pt 3pt}.ZUCC .word-abstract .word-abstract-title{margin-top:32pt;margin-bottom:32pt;font-weight:400;text-align:center;font-size:18pt;font-family:"黑体";line-height:1.5}.ZUCC .word-abstract .word-abstract-content p{font-family:"宋体","仿宋_GB2312","仿宋","华文中宋","黑体","华文细黑";font-size:12pt;line-height:1.5;text-indent:2em;margin-bottom:6pt}.ZUCC .word-abstract .word-abstract-content p:last-child{margin-bottom:0}.ZUCC .c-lxyj-title--1{margin:0;line-height:2}.ZUCC .c-lxyj .c-lxyj-title{font-family:"宋体","仿宋_GB2312","仿宋","华文中宋","黑体","华文细黑";font-size:10.5pt;line-height:1.5;font-weight:400}.ZUCC .c-lxyj .c-lxyj-content{font-family:"宋体","仿宋_GB2312","仿宋","华文中宋","黑体","华文细黑";font-size:10.5pt;line-height:1.5;font-weight:400}.ZUCC .c-yijian-content .c-yijian-sign{text-align:right;line-height:2}.FJMU .lxyj-cxxl .c-lxyj .c-lxyj-title{font-family:"仿宋_GB2312","仿宋","宋体","华文中宋","黑体","华文细黑";font-size:14pt;line-height:1.5;font-weight:700}.FJMU .lxyj-cxxl .c-lxyj .c-lxyj-title{font-family:"宋体","仿宋_GB2312","仿宋","华文中宋","黑体","华文细黑";font-size:14pt;line-height:1.5;font-weight:400}
+    </style>
+    <style type="text/css">
+        .note-article--container{position:relative;font-family:"Microsoft YaHei",Arial,"宋体";font-size:14px;color:#2f2f2f;overflow-x:hidden;margin-bottom:10px;text-indent:2em;line-height:2}.note-article--container .note--paragraph,.note-article--container [note-article=paragraph],.note-article--container [note-article=paragraph] span,.note-article--container span{font-size:14px;margin-bottom:10px;text-indent:2em;line-height:2}.note-article--container .note--picture,.note-article--container [note-article=picture]{margin:24px auto;max-width:100%;display:block;max-width:800px;max-height:800px}.note-article--container [note-article=paragraph] sup{top:-3px}
+    </style>
+
+    
+    <style>
+    p.MsoFooter, li.MsoFooter, div.MsoFooter {
+        margin: 0in;
+        margin-bottom: 0.001pt;
+        mso-pagination: widow-orphan;
+        tab-stops: center 3.0in right 6.0in;
+        font-size: 12.0pt;
+        font-family: 等线, 宋体,华文细黑,'Microsoft YaHei',仿宋, 黑体;
+    }
+
+    <!-- /* Style Definitions */
+    @page Section1 {
+        size: 8.5in 11.0in;
+        margin: 1.0in 1.0in 1.0in 1.0in;
+        mso-header-margin: 0.5in;
+        mso-footer-margin: 0.5in;
+        mso-title-page: yes;
+        mso-header: page-info-container--header;
+        mso-even-header: page-info-container--header-;
+        mso-footer: page-info-container--footer;
+        mso-first-header: page-info-container--header-;
+        mso-first-footer: page-info-container--footer;
+        mso-paper-source: 0;
+    }
+
+    div.Section1 {
+        page: Section1;
+    }
+
+    table#page-info-container {
+        margin: 0in 0in 0in 900in;
+        width: 0px;
+        height: 0px;
+        overflow: hidden;
+    }
+    -->
+</style>
+
+</head>
+<body class="c-word--body">
+    <div>
+        
+
+
+        <div class="Section1">
+            <div class="single-page">
+                <div class="word-logo">
+                </div>
+
+                    <div class="word-title1">
+                        <div>西安电子科技大学大学生创新训练项目计划申请书</div>
+                    </div>
+
+                <div class="word-userinfo-container" style="text-align:center;">
+                    <table class="word-userinfo">
+                        <tbody>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">项目编号</td>
+                                <td colspan="7" class="c-cell-value">
+                                    X202610701456
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">项目名称</td>
+                                <td colspan="7" class="c-cell-value">
+                                    基于视觉自回归模型的图像光照估计方法研究
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">项目负责人</td>
+                                <td colspan="3" class="c-cell-value">
+                                    王宣宣
+                                </td>
+                                <td style="width:20%;" class="c-cell-title">联系电话</td>
+                                <td colspan="3" class="c-cell-value">
+                                    15036413991
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">所在学院</td>
+                                <td colspan="7" class="c-cell-value">
+                                    光电工程学院
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">学号</td>
+                                <td colspan="3" class="c-cell-value">
+                                    24009300302
+                                </td>
+                                <td style="width:20%;" class="c-cell-title">专业班级</td>
+                                <td colspan="3" class="c-cell-value">
+                                    光电信息科学与工程
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">指导教师</td>
+                                <td colspan="7" class="c-cell-value">
+                                    延翔
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">E-mail</td>
+                                <td colspan="7" class="c-cell-value">
+                                    wxx.060129@qq.com
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">申请日期</td>
+                                <td colspan="7" class="c-cell-value">
+                                    2025年11月07日
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:22%;" class="c-cell-title">项目期限</td>
+                                <td colspan="7" class="c-cell-value">
+                                    一年半期
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin:80pt 0 6pt;font-family:黑体,华文细黑;font-size:15.0pt;text-align:center;">
+                    西安电子科技大学 教务处
+                </div>
+            </div>
+            <br clear="all" style="page-break-before:always;">
+            <div class="single-page">
+                <div class="word-abstract">
+                    <div class="word-abstract-title" style="margin-top:32pt;margin-bottom:32pt;font-weight:600;text-align:center;font-size:18.0pt;font-family:宋体;">
+                        填写说明
+                    </div>
+                        <div class="word-abstract-content" style="margin-top:32pt;">
+                            <ol style="font-family:仿宋,宋体;font-size:15pt;line-height:32pt;">
+                                <li>本申请书所列各项内容均须实事求是，认真填写，表达明确严谨，简明扼要。</li>
+                                <li>申请人可以是个人，也可为创新团队，首页只填负责人。“项目编号”一栏不填。</li>
+                                <li>本申请书为大16开本（A4），左侧装订成册。可网上下载、自行复印或加页，但格式、内容、大小均须与原件一致。</li>
+                                    <li>负责人所在学院认真审核, 经初评和答辩，签署意见后，将申请书（一式两份）报送西安电子科技大学项目管理办公室。</li>
+                            </ol>
+                        </div>
+                </div>
+            </div>
+            <br clear="all" style="page-break-before:always;">
+            <div class="single-page">
+                <!--  一、	基本情况 开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        一、	基本情况
+                    </h4>
+                    <div class="c-base-info-content">
+                        <table class="c-base-info-table">
+                            <tbody>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title">项目名称</td>
+                                    <td colspan="9" class="c-cell-value">
+                                        基于视觉自回归模型的图像光照估计方法研究
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title">所属学科</td>
+                                    <td colspan="9" class="c-cell-value">
+                                        <div class="c-cell-content">
+                                            <span>
+                                                <span class="c-title">学科一级类：</span>
+                                                <span class="c-value">工学</span>
+                                            </span>
+                                            <span>&nbsp;</span>
+                                            <span>
+                                                <span class="c-title">学科二级类：</span>
+                                                <span class="c-value">电子信息类</span>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title">项目来源</td>
+                                    <td colspan="9" class="c-cell-value">
+                                        <div class="c-cell-content" style="vertical-align:middle;">
+                                                        <div>
+                                                            □
+                                                            <span>A、学生自主选题，来源于自己对课题的长期积累与兴趣</span>
+                                                        </div>
+                                                        <div>
+                                                            ■
+                                                            <span>B、学生来源于教师科研项目选题</span>
+                                                        </div>
+                                                        <div>
+                                                            □
+                                                            <span>C、学生承担社会、企业委托项目选题</span>
+                                                        </div>
+                                                        <div>
+                                                            □
+                                                            <span>D、拔尖专项</span>
+                                                        </div>
+                                                        <div>
+                                                            □
+                                                            <span>E、竞赛专项</span>
+                                                        </div>
+                                                        <div>
+                                                            □
+                                                            <span>F、研修专项</span>
+                                                        </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title">申请金额</td>
+                                    <td class="c-cell-value">
+                                                <span>8000.00</span>
+
+                                        <span> 元</span>
+                                    </td>
+                                    <td class="c-cell-title">项目期限</td>
+                                    <td class="c-cell-value">
+                                        一年半期
+                                    </td>
+                                    <td class="c-cell-title" colspan="2">拟申报项目级别</td>
+                                    <td class="c-cell-value" colspan="4">
+                                        
+                                    </td>
+                                </tr>
+
+                                    <tr>
+                                        <td style="width:10%;" class="c-cell-title">负责人</td>
+                                        <td class="c-cell-value" colspan="1" style="width:10%;">
+                                            王宣宣
+                                        </td>
+                                        <td style="width:10%;" class="c-cell-title">性别</td>
+                                        <td class="c-cell-value" colspan="1" style="width:5%;">
+                                            女
+                                        </td>
+                                        <td style="width:10%;" class="c-cell-title">民族</td>
+                                        <td class="c-cell-value" colspan="1" style="width:15%;">
+                                            
+                                        </td>
+                                        <td style="width:10%;" class="c-cell-title">出生年月</td>
+                                        <td class="c-cell-value" colspan="3" style="width:50%;text-align:center;">
+                                                    <span>年&nbsp;月</span>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:10%;" class="c-cell-title">学号</td>
+                                        <td colspan="1" class="c-cell-value" style="width:20%;">
+                                            24009300302
+                                        </td>
+                                        <td style="width:5%;" class="c-cell-title">联系电话</td>
+                                        <td colspan="7" class="c-cell-value" style="width:65%;">
+                                            <div class="c-cell-content">
+                                                <span>
+                                                    <span class="c-title">宅：</span>
+                                                    <span class="c-value"></span>
+                                                </span>
+                                                <span>
+                                                    <span class="c-title">手机：</span>
+                                                    <span class="c-value">15036413991</span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+
+                                            <tr>
+                                                <td style="width:10%;" class="c-cell-title">指导教师</td>
+                                                <td colspan="1" class="c-cell-value" style="width:20%;">
+                                                    延翔
+                                                </td>
+                                                <td style="width:5%;" class="c-cell-title">联系电话</td>
+                                                <td colspan="7" class="c-cell-value" style="width:65%;">
+                                                    <div class="c-cell-content">
+                                                        <span>
+                                                            <span class="c-title">宅：</span>
+                                                            <span class="c-value"></span>
+                                                        </span>
+                                                        <span>
+                                                            <span class="c-title">手机：</span>
+                                                            <span class="c-value">13679106001</span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title" colspan="2">项目简介</td>
+                                    <td class="c-cell-value" colspan="8" style="width:90%;">
+                                        <div class="c-cell-content">
+                                            图像光照估计旨在从普通的光学图像中恢复场景真实的光照分布，是增强现实、虚拟渲染、目标识别等视觉任务的重要基础。在实际应用中，光照信息通常难以直接获取，现有深度学习方法依赖高质量光照数据监督训练，成本高、泛化能力不足。同时，复杂场景中全局光照关系难以建模，导致估计结果在高动态范围场景下细节缺失或光照失真。自回归模型近年来在图像生成领域展现出卓越的局部细节保持与全局结构一致性建模能力，为光照推断提供了新的理论基础。本项目拟研究一种基于视觉自回归模型的图像光照估计方法，实现从单幅图像高精度恢复环境光照。核心研究内容包括:1.构建自回归光照估计网络，实现对光照空间分布的逐区域递推建模。2.引入多约束损失函数，提升光照一致性与高光区域重建质量。3.利用多场景光照数据集与客观评估指标,验证模型在不同场景中的鲁棒性。
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title" colspan="2">负责人曾经参与科研的情况</td>
+                                    <td class="c-cell-value" colspan="8" style="width:90%;">
+                                        <div class="c-cell-content">
+                                            <div class="note-article--container"><p note-article="paragraph">1.2025年中国大学生计算机设计大赛西北地区赛二等奖</p><p note-article="paragraph">2.2025年中国大学生计算机设计大赛校赛一等奖</p><p note-article="paragraph">3.中国国际大学生创新大赛校赛铜奖</p></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title" colspan="2">指导教师承担科研课题情况</td>
+                                    <td class="c-cell-value" colspan="8" style="width:90%;">
+                                        <div class="c-cell-content">
+                                            <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">军委科技委举办的第三届全国“源创杯”大赛三等奖1项，指导学生获“第十二届全国大学生光电设计竞赛”二等奖、“第十二届全国大学生光电设计竞赛（西北赛区）”一等奖。</div><p note-article="paragraph"></p></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;" class="c-cell-title" colspan="2">指导教师对本项目的支持情况</td>
+                                    <td class="c-cell-value" colspan="8" style="width:90%;">
+                                        <div class="c-cell-content">
+                                            <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">推荐申报。</div><p note-article="paragraph"></p></div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width:5%;" class="c-cell-title" rowspan="4">项目组主要成员</td>
+                                    <td class="c-cell-title" style="width:5%;">姓名</td>
+                                    <td class="c-cell-title" style="width:13%;">学号</td>
+                                    <td class="c-cell-title" style="width:13%;">学院</td>
+                                    <td class="c-cell-title" style="width:13%;">专业班级</td>
+                                    <td class="c-cell-title" style="width:13%;">联系电话</td>
+                                    <td class="c-cell-title" colspan="5" style="width:43%;">项目分工</td>
+                                </tr>
+                                        <tr class="c-liststudent-tr">
+                                            <td class="c-cell-value">
+                                                王宣宣
+                                            </td>
+                                            <td class="c-cell-value">
+                                                24009300302
+                                            </td>
+                                            <td class="c-cell-value">
+                                                光电工程学院
+                                            </td>
+                                            <td class="c-cell-value">
+                                                光电信息科学与工程
+                                            </td>
+                                            <td class="c-cell-value">
+                                                15036413991
+                                            </td>
+                                            <td class="c-cell-value" colspan="5">
+                                                技术研究，材料整理
+                                            </td>
+                                        </tr>
+                                        <tr class="c-liststudent-tr">
+                                            <td class="c-cell-value">
+                                                邱茂城
+                                            </td>
+                                            <td class="c-cell-value">
+                                                25009300422
+                                            </td>
+                                            <td class="c-cell-value">
+                                                新生书院（新生社区）
+                                            </td>
+                                            <td class="c-cell-value">
+                                                电子信息类（电子科学、信息物理、空天信息）
+                                            </td>
+                                            <td class="c-cell-value">
+                                                18259114251
+                                            </td>
+                                            <td class="c-cell-value" colspan="5">
+                                                技术研究，汇报答辩
+                                            </td>
+                                        </tr>
+                                        <tr class="c-liststudent-tr">
+                                            <td class="c-cell-value">
+                                                张羿涵
+                                            </td>
+                                            <td class="c-cell-value">
+                                                24039100629
+                                            </td>
+                                            <td class="c-cell-value">
+                                                计算机科学与技术学院
+                                            </td>
+                                            <td class="c-cell-value">
+                                                计算机科学与技术
+                                            </td>
+                                            <td class="c-cell-value">
+                                                15333066258
+                                            </td>
+                                            <td class="c-cell-value" colspan="5">
+                                                技术研究，PPT制作
+                                            </td>
+                                        </tr>
+
+                                <tr>
+                                    <td style="width:5%;" class="c-cell-title" rowspan="2">指导教师</td>
+                                    <td class="c-cell-title" style="width:5%;">姓名</td>
+                                    <td class="c-cell-title" style="width:13%;">工号</td>
+                                    <td class="c-cell-title" style="width:13%;">学院/单位</td>
+                                    <td class="c-cell-title" style="width:13%;">职称</td>
+                                    <td class="c-cell-title" style="width:13%;">联系电话</td>
+                                    <td class="c-cell-title" colspan="5" style="width:43%;">电子邮件</td>
+                                </tr>
+                                        <tr class="c-liststudent-tr">
+                                            <td class="c-cell-value">
+                                                延翔
+                                            </td>
+                                            <td class="c-cell-value">
+                                                6849
+                                            </td>
+                                            <td class="c-cell-value">
+                                                光电工程学院
+                                            </td>
+                                            <td class="c-cell-value">
+                                                副教授
+                                            </td>
+                                            <td class="c-cell-value">
+                                                13679106001
+                                            </td>
+                                            <td class="c-cell-value" colspan="5">
+                                                xyan@xidian.edu.cn
+                                            </td>
+                                        </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--  一、	基本情况 结束-->
+                <!--  二、	立项依据（可加页） 开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        二、	立项依据（可加页）
+                    </h4>
+                    <div class="c-base-info-content">
+                        <table class="c-lxyj-table">
+                            <tr>
+                                <td>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （1）研究目的
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">本课题旨在系统性地解决图像光照估计领域长期存在的关键技术瓶颈，并探索以自回归与生成式模型为代表的新兴范式。是一项兼具前沿理论探索、核心技术攻关、广泛产业赋能与战略资产积累价值的综合性研究，对推动计算机视觉与图形学及相关应用领域的进步具有深远影响。
+</div><div note-article="paragraph">本研究的核心学术价值在于开辟模型架构的新路径。通过将视觉自回归模型引入光照估计这一经典底层视觉任务，不仅丰富了自回归模型的应用疆界，验证其在高度结构化视觉问题上的潜力，更促进了生成模型与低级视觉任务的深度融合。这种跨范式探索为理解与建模复杂视觉信号（如高阶光照交互）提供了新的理论框架和工具，有助于催生更具通用性和表达能力的视觉计算模型。
+</div><div note-article="paragraph">课题直指依赖高成本标注数据、复杂场景建模能力不足等行业共性瓶颈。其技术突破意义重大：首先，通过新范式降低对精准标注的依赖，为海量无标注或弱标注图像数据的光照信息利用开辟道路。其次，提升复杂光照（如多光源、间接光照、高动态范围）的重建质量与鲁棒性，为“虚拟与真实融合”这一数字技术核心愿景提供了关键支撑。这将显著提升计算机图形学中光照仿真的自动化与真实感水平，同时增强自动驾驶、机器人视觉等系统在极端光照条件下的环境感知鲁棒性。
+</div><div note-article="paragraph">研究成果具备商业化前景，能有效驱动多产业升级。在数字内容创作领域，可大幅提升影视特效、元宇宙、数字孪生等内容的光照一致性与沉浸感，降低制作成本。在电子商务与新零售中，能实现商品在不同虚拟光照环境下的逼真展示，优化用户体验。在智慧城市与智能安防领域，通过精准光照估计与归一化，可提升监控图像的分析可靠性。这些应用共同服务于数字经济向更高质量、更沉浸式体验的发展需求。
+</div><div note-article="paragraph">综上所述，本课题是一项以解决具体技术瓶颈为起点，以范式探索为牵引，最终旨在产生系统性、多层次价值的研究。它不仅在学术上寻求突破，更致力于将前沿理论转化为攻克产业共性难题的利器，在数字视觉基础技术领域将有重要意义。</div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （2）研究内容
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph"><div note-article="paragraph">研究内容：本项目围绕“如何利用视觉自回归模型实现高精度、高一致性的单图像光照估计”这一核心目标，展开以下三个层面的系统性研究：
+</div><div note-article="paragraph">1.自回归光照估计网络架构的设计与实现：本研究将构建一个专为光照分布生成设计的视觉自回归网络。核心在于将全景光照图（Environment Map）的生成建模为一个空间序列预测任务。
+</div><div note-article="paragraph">2.多约束联合优化损失函数的设计：为引导自回归网络生成物理上合理、视觉上真实的光照，本研究将设计一个综合的损失函数体系，而非单一的像素级重建损失。
+</div><div note-article="paragraph">该项目旨在实现高效且有效的自回归光照建模，研究非完全自回归的并行化训练策略（如掩码自编码预训练）；探索基于光照重要性（如光源位置优先）或几何引导的动态序列生成顺序；在缺乏密集真实监督的情况下，保证生成光照的物理真实性与全局一致性精准重建高动态范围（HDR）光照，特别是极端高光与深阴影区域的细节。以及验证模型在复杂、多样化真实场景中的泛化能力与实用价值</div></div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （3）国、内外研究现状和发展动态
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">目前，主流的光照估计方法主要依赖于深度学习。早期的监督学习方法通过构建大规模高质量的光照数据集（如HDR环境贴图）对深度网络进行训练。这类方法虽能取得不错的效果，但其瓶颈显而易见：高质量、全场景的光照标注数据获取成本极高、过程繁琐，严重限制了数据集的规模与多样性，导致模型的泛化能力在面对复杂、未知场景时急剧下降。
+</div><div note-article="paragraph">为了摆脱对密集标注的依赖，研究者们转向了弱监督或无监督范式，通过引入物理渲染约束、图像重建损失或对抗性训练等方式进行学习。生成对抗网络（GAN）和最近的扩散模型在这一路径上展现出生成逼真光照的潜力。然而，这些方法在处理高动态范围（HDR）场景时，常常在细节上做出妥协——要么在明亮的高光区域丢失纹理细节，要么在深邃的阴影处产生不符合物理规律的噪声。其根本原因在于，复杂场景中的光照是一个高度结构化的全局性信号，传统的前馈式网络结构在建模这种长距离的空间依赖关系和保持全局一致性方面存在局限。
+</div><div note-article="paragraph">当前的研究趋势清晰地指向了几个深度融合的方向。首先，神经渲染革命的深远影响不容忽视。以神经辐射场（NeRF）为代表的体积渲染技术，不仅为生成逼真的新视图提供了工具，更为光照估计开辟了新路径。如今，光照估计可以与场景几何重建联合进行，在三维空间中直接推断光照，确保了多视角下的光照一致性，这代表了从“2D图像处理”向“3D场景理解”的关键跃迁。其次，物理先验与数据驱动的结合日益紧密。纯粹依赖数据的方法易陷入“黑箱”困境，而将渲染方程、双向反射分布函数（BRDF）等物理模型作为可微分的约束融入神经网络，极大地提升了模型的合理性与泛化能力。这种“物理引导的深度学习”范式，正成为提升模型在极端光照条件下表现的关键。
+</div><div note-article="paragraph">自回归与Transformer架构的崛起为序列建模带来了全新思路。在自然语言处理和图像生成领域，自回归模型通过逐元素预测，展现了无与伦比的细节生成能力和全局结构把控力。视觉Transformer及其变体，通过自注意力机制显式地建模图像块之间的远程关系，这恰恰是精确推断光照分布所亟需的能力。尽管这类模型在图像分类、生成中已大放异彩，但在光照估计这一特定结构化预测任务中，其潜力尚处于系统化探索的初期。</div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （4）项目研究与实施的基础条件
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">1.硬件条件：GPU服务器：配备 NVIDIA A100/A6000 显卡（48GB显存），其强大的并行计算能力是训练大规模 Vision Transformer 模型和处理高分辨率 HDR-EMs 的关键。FPGA边缘设备：Xilinx Ultra96 或 ZCU104 开发板，用于模型 INT8 量化 和轻量化部署验证。数据存储：≥15TB NAS 存储，用于存放 Matterport3D 原始数据（约 1.5TB） 及衍生的高精度 HDR-EM 数据集。
+</div><div note-article="paragraph">2.软件条件：深度学习框架：PyTorch 2.0+，支持 Transformer 自定义注意力机制 和 ERP 卷积填充 算子开发。渲染与评估工具：PyTorch3D/Mitsuba 渲染器 （用于渲染 FID 验证）、kornia 库（用于可微分几何变换）。部署工具：Vitis-AI 2.5+，用于FPGA端模型量化与 DPU 编译。
+</div><div note-article="paragraph">3.知识基础：理论基础：熟练掌握 Retinex 理论 、互易律等光照物理模型。深入理解 Vision Transformer 、因果掩码 与 空间自回归 (SAR) 理论 。工程能力：具备 Vision Transformer 混合架构设计经验。掌握 HDR/ERP 格式处理 、漫反射卷积核的计算与实现 。熟悉 生成对抗网络 训练技巧及 VGG 损失 的应用。
+</div><div note-article="paragraph">4.数据基础：核心训练集：Matterport3D （194,400张 HDR RGB-D 图），已规划好 高精度 GT 的生成流程。辅助/测试数据集：Laval HDR Indoor （用于 跨数据集泛化性 评估），SUN360（背景多样性补充）。</div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （5）项目实施方案
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">1.数据准备与高精度GT构建：下载 Matterport3D 数据集并预处理。然后实现高几何精度 HDR-EM 生成算法。通过随机旋转 、水平翻转、亮度/色调扰动，提升模型鲁棒性，增强数据。
+</div><div note-article="paragraph">2.GC-PARN架构实现与功能验证：完成编译器和自回归解码器部分。并通过将几何 Token 注入解码器，作为 Key/Value引导空间对齐，实现交叉注意力机制，完成几何注入。进行高低频解耦，以实现两阶段残差预测
+</div><div note-article="paragraph">3.多约束损失函数实现与调试：实现物理损失实和生成损失，同时通过实现边缘感知平滑项，利用 LDR 输入图像的梯度指导平滑度以实现平滑先验。
+</div><div note-article="paragraph">4.模型训练与调优：进行预训练，冻结几何编码器，仅训练自回归解码器 500k 步。端到端微调,全模型联合训练 300k 步，进行多目标优化。损失权重调优,使用权重衰减组合
+</div><div note-article="paragraph">5.验证协议实施与性能评估：首先定量评估计算测试集，与 Neural Illumination 等 SOTA 方法对比。然后进行渲染 FID 测试，使用 Mitsuba 渲染器渲染光滑/漫反射虚拟球体 ，计算 FID 分数 。其次进行跨数据集测试，在 Laval HDR Indoor 上进行零样本推理，量化几何泛化性能。最后进行FPGA部署验证。</div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （6）创新点与项目特色
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">特点：项目开创了 "自回归生成 + 几何条件 + 物理约束" 的新范式 ，在精度、效率、鲁棒性三方面实现平衡，为单幅图像光照估计提供端到端、高精度的解决方案
+</div><div note-article="paragraph">创新点：
+</div><div note-article="paragraph">1.GC-PARN架构实现几何引导的逐区域递推生成
+</div><div note-article="paragraph">特色在于首次将视觉自回归模型 与几何先验深度融合，突破传统 CNN 局部感受野限制 。通过 几何 Token 化 和 交叉注意力，GC-PARN 在序列生成中 隐式 完成了空间对齐，避免了模块化方法中 显式可微分 warping 带来的误差累积。两阶段渐进式生成 策略，通过残差学习克服了 Transformer 的低通滤波效应 ，确保高光边缘清晰度。
+</div><div note-article="paragraph">2.多约束损失函数实现物理-感知协同优化
+</div><div note-article="paragraph">特色在于将光照物理定律（朗伯积分、Retinex 平滑）与生成对抗机制统一于自回归框架。设计了双重物理约束 ：确保生成结果的视觉真实感，实现物理精确度与生成质量的最佳平衡。Retinex 驱动的边缘感知平滑项 提供了强大的光照平滑先验，稳定了生成模型在未观测区域的预测。确保生成结果的视觉真实感，实现物理精确度与生成质量的最佳平衡。
+</div><div note-article="paragraph">3.双重验证协议兼顾客观精度与主观质量
+</div><div note-article="paragraph">特色在于提出 渲染保真度感知度量 FID ，填补传统误差无法评估视觉连贯性的空白 。通过 渲染光滑/漫反射虚拟物体 间接评估光照质量，更贴近 AR/VR 的实际应用需求。跨数据集零样本测试 严格验证模型的 几何泛化能力，确保 GC-PARN 学到的是光照推理机制而非记忆场景纹理 。&nbsp;</div><div note-article="paragraph"></div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （7）技术路线、拟解决的问题及预期成果
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph"><div note-article="paragraph">技术路线：按照研究进度安排，我们会适时召开讨论会议，大家会提出自己创造性的想法，并且指导老师也会给出一定的指导和建议。在此课题中，我们针对研究的主要问题，积极展开思考，提出解决方案，对模型进行不断的优化设计， 以达到我们的研究目的。在此基础上，我们从多个方案中遴选出了较为可能、较优的一套方案进行详细的理论研究。在理论研究基础上进行模型搭建，在现有条件基础上进行探究，并对实验数据及现象进行分析，得出结论。 如果实验装置未达到理论预期效果，我们再集中讨论查找原因、提出修改方案和改进实验装置，如果实验装置达到了理论预期效果，我们再进行装置优化，并将实验装置用于实践进行探索，使研究项目走向应用。这样有利于我们及时发现问题，同时也有利于我们协作能力和交流能力的提升。</div><div note-article="paragraph">拟解决问题：本项目拟研究一种基于视觉自回归模型的图像光照估计方法，实现从单幅图像高精度恢复环境光照。</div></div><div note-article="paragraph">预期成果果:撰写1篇学术论文、1项发明专利或1份项目总结报告。</div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （8）项目研究进度安排
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">2022年的第一季度需要将基础知识基本掌握；第二季度（中期答辩）完成系统的数据预处理模块和基础网络架构搭建，实现简单的回归基线；第三季度，自回归模型实现及训练流水线实现，如SequenceEncoder、训练脚本；第四季度优化指标，提升模型性能、泛化能力、实用价值等。</div><p note-article="paragraph"></p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="c-lxyj">
+                                                            <h4 class="c-lxyj-title">
+                                                                （9）已有基础
+                                                            </h4>
+                                                            <div class="c-lxyj-content">
+                                                                        <div class="c-lxyj-sub">
+                                                                            <div class="c-lxyj-sub-title">1.与本项目有关的研究积累和已取得的成绩</div>
+                                                                            <div class="c-lxyj-sub-contet">
+                                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">目前已经在积累深度学习、图像处理的相关知识，在感兴趣区域卷积神经网络、3D图形学知识不断取得进步。</div><p note-article="paragraph"></p></div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-lxyj-sub">
+                                                                            <div class="c-lxyj-sub-title">2.已具备的条件，尚缺少的条件及解决方法</div>
+                                                                            <div class="c-lxyj-sub-contet">
+                                                                                <div class="note-article--container"><p note-article="paragraph"></p><div note-article="paragraph">资料数据集和专业工具齐全，老师和学长学姐也会热心的给予帮助。目前缺少高性能GPU以及大容量存储，计划通过使用云GPU、调整模型规模、使用数据压缩技术等方式解决。</div><p note-article="paragraph"></p></div>
+                                                                            </div>
+                                                                        </div>
+
+                                                            </div>
+                                                        </div>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!--  二、	立项依据（可加页） 结束-->
+                <!--  三、	经费预算 开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        三、	经费预算
+                    </h4>
+                    <div class="c-base-info-content">
+                            <table class="c-jfys-table">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th rowspan="2">
+                                            开支科目
+                                        </th>
+                                        <th rowspan="2">
+                                            预算经费（元）
+                                        </th>
+                                        <th rowspan="2">
+                                            主要用途
+                                        </th>
+                                        <th colspan="2">
+                                            阶段下达经费计划（元）
+                                        </th>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <th>前半阶段</th>
+                                        <th>后半阶段</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        预算经费总额
+                                                    </td>
+                                                    <td class="text-center">
+                                                        8000.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        8000.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        1. 业务费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        5000.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        5000.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        （1）计算、分析、测试费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        1000.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        1000.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        （2）能源动力费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        （3）会议、差旅费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        1000.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        1000.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        （4）文献检索费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        （5）论文出版费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        3000.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        3000.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        2. 仪器设备购置费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        3. 实验装置试制费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        4. 材料费
+                                                    </td>
+                                                    <td class="text-center">
+                                                        3000.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        无
+                                                    </td>
+                                                    <td class="text-center">
+                                                        0.00
+                                                    </td>
+                                                    <td class="text-center">
+                                                        3000.00
+                                                    </td>
+                                                </tr>
+                                            <tr class="text-center">
+                                                <td>
+                                                    <b>学校拨款</b>
+                                                </td>
+                                                <td colspan="4">
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <td>
+                                                    <b>财政拨款</b>
+                                                </td>
+                                                <td colspan="4">
+                                                    
+                                                </td>
+                                            </tr>
+
+                                </tbody>
+                            </table>
+
+                    </div>
+                </div>
+                <!--  三、	经费预算 结束-->
+                <!--  四、	项目组成员签名 开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        四、	项目组成员签名
+                    </h4>
+                    <div class="c-base-info-content">
+                        <table class="c-yijian-table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <div class="c-yijian-content">
+                                                &nbsp;
+                                            </div>
+                                            <div class="c-yijian-content">
+                                                &nbsp;
+                                            </div>
+                                            <div class="c-yijian-content">
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--  四、	项目组成员签名 结束-->
+                <!--  五、	指导教师意见 开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        五、	指导教师意见
+                    </h4>
+                    <div class="c-base-info-content">
+                        <table class="c-yijian-table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                                    <div class="c-yijian-content">
+                                                        同意申报
+                                                    </div>
+
+                                                    <div class="c-yijian-content">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="c-yijian-sign">
+                                                        <div>导师（签章）：</div>
+                                                        <div>&nbsp;&nbsp;年&nbsp;月&nbsp;日&nbsp;&nbsp;</div>
+                                                    </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--  五、	指导教师意见 结束-->
+                <!--  六、	院系推荐意见  开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        六、	院系推荐意见
+                    </h4>
+                    <div class="c-base-info-content">
+                        <table class="c-yijian-table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                                    <div class="c-yijian-content">
+                                                        同意
+                                                    </div>
+
+                                                    <div class="c-yijian-content">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="c-yijian-sign">
+                                                        <div>盖   章：</div>
+                                                        <div>&nbsp;&nbsp;年&nbsp;月&nbsp;日&nbsp;&nbsp;</div>
+                                                    </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--  六、	院系推荐意见  结束-->
+                <!--  七、	学校推荐意见   开始-->
+                <div class="c-base-info">
+                    <h4 class="c-base-info-title">
+                        七、	学校推荐意见
+                    </h4>
+                    <div class="c-base-info-content">
+                        <table class="c-yijian-table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                                    <div class="c-yijian-content">
+                                                        同意
+                                                    </div>
+
+                                                    <div class="c-yijian-content">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="c-yijian-sign">
+                                                        <div>盖   章：</div>
+                                                        <div>&nbsp;&nbsp;年&nbsp;月&nbsp;日&nbsp;&nbsp;</div>
+                                                    </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--  七、	学校推荐意见   结束-->
+            </div>
+        </div>
+        <div>
+            <table id="page-info-container" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>
+                        <div style="mso-element:header;" id="page-info-container--header">
+                            <p class="MsoHeader">
+                                    <img src="https://cxcycs.xidian.edu.cn/assets/img/item_declare_exportword_schoollogo_header.png" width="180" height="45" data-command="title">
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="mso-element:footer;" id="page-info-container--footer">
+                            <p class="MsoFooter" style="text-align:center;">
+                                <span style="mso-field-code:PAGE"><span style="mso-no-proof:yes"></span></span> / <span style="mso-field-code:NUMPAGES"></span>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

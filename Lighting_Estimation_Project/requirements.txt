@@ -1,0 +1,7 @@
+# Install a GPU-compatible torch/torchvision pair first; see README.
+torch>=2.7
+torchvision>=0.22
+numpy>=2.0
+opencv-python>=4.10
+# Only the legacy main.py display uses matplotlib.
+matplotlib>=3.9

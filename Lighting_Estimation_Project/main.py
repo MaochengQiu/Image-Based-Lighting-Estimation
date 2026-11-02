@@ -37,11 +37,8 @@ def main(input_path, output_path=None):
     if output_path is None:
         base_name = os.path.basename(input_path)
         name, ext = os.path.splitext(base_name)
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "outputs")
-        
-        if not os.path.exists(output_dir):
-            output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs")
-            os.makedirs(output_dir, exist_ok=True)
+        output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs")
+        os.makedirs(output_dir, exist_ok=True)
             
         output_path = os.path.join(output_dir, f"{name}_envmap.png")
     

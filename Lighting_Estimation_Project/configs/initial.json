@@ -1,0 +1,38 @@
+{
+  "seed": 42,
+  "data": {
+    "input_size": [224, 224],
+    "env_size": [128, 256],
+    "hfov_degrees": 90.0,
+    "yaws_degrees": [-180, -90, 0, 90],
+    "train_exposures": [0.25, 1.0, 4.0],
+    "split_fractions": [0.8, 0.1, 0.1],
+    "hdr_scale": 1.0,
+    "max_log_value": 20.0
+  },
+  "tokenizer": {
+    "base_channels": 32,
+    "embedding_dim": 64,
+    "codebook_size": 512,
+    "commitment_weight": 0.25,
+    "downsample_factor": 16
+  },
+  "ar": {
+    "d_model": 256,
+    "heads": 8,
+    "layers": 6,
+    "dropout": 0.1,
+    "pretrained_image_encoder": true
+  },
+  "loss": {"linear": 0.05, "diffuse": 0.1},
+  "training": {
+    "batch_size": 2,
+    "accumulation_steps": 8,
+    "epochs": 20,
+    "tokenizer_lr": 0.0002,
+    "ar_lr": 0.0001,
+    "grad_clip": 1.0,
+    "num_workers": 0,
+    "validation_generation_limit": 16
+  }
+}

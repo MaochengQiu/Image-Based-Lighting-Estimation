@@ -25,6 +25,8 @@ class IlluminationObjective(nn.Module):
         self.max_log = config['data']['max_log_value']
         self.linear_weight = config['loss']['linear']
         self.diffuse_weight = config['loss']['diffuse']
+        self.edge_weight = config['loss'].get('edge', 0.0)
+        self.highlight_weight = config['loss'].get('highlight', 0.0)
 
     def weighted_mean(self, value):
         return (value * self.weights).sum((-2, -1)).mean(1)
@@ -38,12 +40,18 @@ class IlluminationObjective(nn.Module):
     def forward(self, predicted_log, target_hdr):
         target_log = torch.log1p(target_hdr / self.scale)
         prediction = self.to_hdr(predicted_log)
-        log_error = self.weighted_mean((predicted_log - target_log).square())
+        importance = 1 + self.highlight_weight * (target_log.mean(1, keepdim=True) /
+            (target_log.mean((1, 2, 3), keepdim=True) + 0.1)).clamp(max=10)
+        log_error = self.weighted_mean((predicted_log - target_log).square() * importance)
+        delta = predicted_log - target_log
+        horizontal = delta - delta.roll(1, dims=-1)
+        vertical = torch.nn.functional.pad(delta[:, :, 1:] - delta[:, :, :-1], (0, 0, 0, 1))
+        edge_error = self.weighted_mean(horizontal.abs() + vertical.abs())
         linear_error = self.weighted_mean((prediction - target_hdr).square())
         normalizer = self.weighted_mean(target_hdr.square()).detach() + self.scale ** 2
         diffuse_error = (self.diffuse(prediction) - self.diffuse(target_hdr)).square().mean((1, 2))
         diffuse_normalizer = self.diffuse(target_hdr).square().mean((1, 2)).detach() + self.scale ** 2
-        total = (log_error + self.linear_weight * linear_error / normalizer
+        total = (log_error + self.edge_weight * edge_error + self.linear_weight * linear_error / normalizer
                  + self.diffuse_weight * diffuse_error / diffuse_normalizer).mean()
         return total
 

@@ -132,6 +132,30 @@ def train(args, config, device):
     save_json(output / 'environment.json', {'torch': str(torch.__version__), 'cuda': torch.version.cuda,
                                            'device': str(device), 'manifest_sha256': train_set.fingerprint,
                                            'tokenizer_sha256': tokenizer_hash})
+    if unique and not args.resume:
+        warmup_epochs = settings.get('tokenizer_warmup_epochs', 0)
+        for warmup_epoch in range(warmup_epochs):
+            tokenizer.train()
+            total_warmup = 0.0
+            for batch in loader:
+                hdr = batch['hdr'].to(device)
+                optimizer.zero_grad(set_to_none=True)
+                latent = tokenizer.encoder(torch.log1p(hdr / objective.scale))
+                reconstruction = F.softplus(tokenizer.decoder(latent))
+                warmup_loss = objective(reconstruction, hdr)
+                assert_finite(warmup_loss)
+                warmup_loss.backward()
+                torch.nn.utils.clip_grad_norm_(tokenizer.parameters(), settings['grad_clip'], error_if_nonfinite=True)
+                optimizer.step()
+                total_warmup += float(warmup_loss.detach()) * hdr.shape[0]
+            with (output / 'warmup.jsonl').open('a', encoding='utf-8') as stream:
+                stream.write(json.dumps({'epoch': warmup_epoch, 'continuous_reconstruction_objective': total_warmup / len(train_set)}) + '\n')
+            if warmup_epoch % 25 == 0 or warmup_epoch + 1 == warmup_epochs:
+                print(f'Continuous tokenizer warmup {warmup_epoch + 1}/{warmup_epochs}: {total_warmup / len(train_set):.6g}', flush=True)
+    if unique and not args.resume and config['tokenizer'].get('initialize_from_data', False):
+        batch = next(iter(loader))['hdr'].to(device)
+        active = tokenizer.initialize_codebook(torch.log1p(batch / objective.scale))
+        print(f'Training-only k-means initialization: {active} active codes', flush=True)
     print(f'{stage}: real paired HDR training; validation uses independent scenes and complete generation.', flush=True)
     accumulation = settings['accumulation_steps']
     if accumulation < 1:
@@ -150,7 +174,12 @@ def train(args, config, device):
                 with torch.no_grad():
                     tokens = tokenizer.encode(log_target)
                 logits = model(image, tokens)
-                loss = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), tokens.reshape(-1))
+                labels = model.sequence_targets(tokens)
+                loss = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), labels.reshape(-1))
+                if model.last_condition_logits is not None:
+                    auxiliary = model.last_condition_logits
+                    loss = loss + config['ar'].get('condition_loss_weight', 1.0) * F.cross_entropy(
+                        auxiliary.reshape(-1, auxiliary.shape[-1]), labels.reshape(-1))
             assert_finite(loss)
             # Exact sample weighting also handles the last incomplete microbatch group.
             group_start = (step // accumulation) * accumulation * settings['batch_size']
@@ -162,10 +191,14 @@ def train(args, config, device):
                 optimizer.zero_grad(set_to_none=True)
             total += float(loss.detach()) * target.shape[0]
             count += target.shape[0]
-        _, metrics = validate(model, tokenizer, val_loader, objective, device, stage,
-                              limit=settings['validation_generation_limit'])
-        improved = metrics['log_rmse'] < best
-        best = min(best, metrics['log_rmse'])
+        metrics = None
+        interval = settings.get('validation_interval', 1)
+        if epoch == 0 or (epoch + 1) % interval == 0 or epoch + 1 == settings['epochs']:
+            _, metrics = validate(model, tokenizer, val_loader, objective, device, stage,
+                                  limit=settings['validation_generation_limit'])
+        improved = metrics is not None and metrics['log_rmse'] < best
+        if metrics is not None:
+            best = min(best, metrics['log_rmse'])
         state = {'stage': stage, 'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
                  'config': config, 'epoch': epoch, 'best_log_rmse': best,
                  'manifest_sha256': train_set.fingerprint, 'tokenizer_sha256': tokenizer_hash,
@@ -180,7 +213,7 @@ def train(args, config, device):
             stream.write(json.dumps(record, allow_nan=False) + '\n')
         print(json.dumps(record), flush=True)
         with (output / 'notes.txt').open('a', encoding='utf-8') as stream:
-            stream.write(f"Epoch {epoch}: validation log RMSE {metrics['log_rmse']:.6g}; no test-set selection.\n")
+            stream.write(f"Epoch {epoch}: validation {metrics}; no test-set selection.\n")
     if epoch_start >= settings['epochs']:
         raise ValueError('Checkpoint has already reached configured epochs')
 
@@ -219,6 +252,8 @@ def main():
     parser.add_argument('--input', help='LDR photo for inference, matching the configured FOV/aspect')
     parser.add_argument('--split', choices=['val', 'test'], default='test')
     parser.add_argument('--device', default='auto')
+    parser.add_argument('--preserve-visible', action='store_true', help='Project observed input into the output; keep raw AR output separately')
+    parser.add_argument('--input-exposure', type=float, help='Optional known linear exposure multiplier; otherwise estimate relative scale')
     args = parser.parse_args()
     config = json.loads(Path(args.config).read_text(encoding='utf-8'))
     seed_everything(config['seed'])
@@ -228,6 +263,8 @@ def main():
         print(f"Prepared {prepare(args.sources, args.out_dir, config)} real-data samples")
         return
     device = device_for(args.device)
+    if device.type == 'cpu':
+        torch.set_num_threads(config['training'].get('cpu_threads', 2))
     if args.stage in {'tokenizer', 'ar'}:
         if not args.manifest:
             parser.error('--manifest is required')
@@ -248,11 +285,19 @@ def main():
         with torch.no_grad():
             prediction = objective.to_hdr(tokenizer.decode(model.generate(image)))
         rgb = prediction[0].cpu().permute(1, 2, 0).numpy()
+        visible_info = None
+        if args.preserve_visible:
+            from src.lighting.visible import constrain_visible
+            write_rgb(output / 'prediction_raw.hdr', rgb, hdr=True)
+            write_rgb(output / 'prediction_raw.png', preview(rgb))
+            input_rgb = image[0].cpu().permute(1, 2, 0).numpy()
+            rgb, visible_info = constrain_visible(rgb, input_rgb, config['data']['hfov_degrees'], args.input_exposure)
         write_rgb(output / 'prediction.hdr', rgb, hdr=True)
         write_rgb(output / 'prediction.png', preview(rgb))
         save_json(output / 'inference.json', {'checkpoint_sha256': sha256_file(args.checkpoint),
                                              'config': config, 'generation': 'greedy',
                                              'max_radiance': float(rgb.max()),
+                                             'visible_consistency': visible_info,
                                              'radiometric_calibration': 'source-relative; not lux'})
         return
     if not args.manifest:
